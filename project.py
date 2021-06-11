@@ -8,11 +8,10 @@ from plotly import graph_objs as go
 START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
-st.title('Stock Forecast App')
-
-stocks = ('GOOG', 'AAPL', 'MSFT', 'GME')
-selected_stock = st.selectbox('Select dataset for prediction', stocks)
-
+st.title('Financial Ally')
+stock = {'Google':'GOOG', 'Apple':'AAPL', 'MicroSoft':'MSFT', 'GameStop':'GME', 'Tesla':'TSLA'}
+selected_stock = st.selectbox('Select dataset for prediction', tuple(stock.keys()))
+selected_stock = stock[selected_stock]
 n_years = st.slider('Years of prediction:', 1, 4)
 period = n_years * 365
 
@@ -44,7 +43,7 @@ plot_raw_data()
 df_train = data[['Date','Close']]
 df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
 
-m = Prophet()
+m = Prophet(daily_seasonality=True)
 m.fit(df_train)
 future = m.make_future_dataframe(periods=period)
 forecast = m.predict(future)
